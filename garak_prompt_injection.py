@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Garak Prompt Injection Testing Script
-=====================================
+LLM vulnerability scanner
+=========================
 
-This script provides an interactive interface for testing LLM models for prompt injection vulnerabilities using garak.
+This script provides an interactive interface for testing LLM models for vulnerabilities using garak.
 It handles model setup with Ollama, conda environment management, and garak execution.
 
 Prerequisites:
