@@ -261,23 +261,32 @@ class LLMVulnerabilityScanner:
         choice = self.get_user_choice("Choose environment option:", options)
         
         if choice == 0:
-            # Create environment
-            self.print_info("Creating conda environment...")
-            success, stdout, stderr = self.run_command(f"conda create -n {self.garak_env} python=3.12 -y")
+            # Ask for environment name
+            env_name = input(f"{Colors.BOLD}Enter the environment name: {Colors.ENDC}").strip()
+            if not env_name:
+                self.print_error("Environment name cannot be empty")
+                return False, ""
+            
+            # Create environment with user provided name
+            self.print_info(f"Creating conda environment: {env_name}")
+            success, stdout, stderr = self.run_command(f"conda create -n {env_name} python=3.12 -y")
             
             if not success:
                 self.print_error(f"Failed to create environment: {stderr}")
-                return False, self.garak_env
+                return False, env_name
                 
             self.print_success("Environment created successfully")
             
+            # Activate the environment (using user provided name)
+            self.print_info(f"Activating environment: {env_name}")
+            
             # Install garak
             self.print_info("Installing garak...")
-            success, stdout, stderr = self.run_command(f"conda run -n {self.garak_env} pip install garak")
+            success, stdout, stderr = self.run_command(f"conda run -n {env_name} pip install garak")
             
             if not success:
                 self.print_error(f"Failed to install garak: {stderr}")
-                return False, self.garak_env
+                return False, env_name
                 
             self.print_success("Garak installed successfully")
             
