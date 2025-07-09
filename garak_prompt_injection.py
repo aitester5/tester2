@@ -165,28 +165,35 @@ class GarakTester:
             self.print_error("Model name cannot be empty")
             return None
             
-        # Create ModelFile
+        # Create ModelFile in the same directory as .gguf file
         model_dir = os.path.dirname(model_path)
+        model_filename = os.path.basename(model_path)
         modelfile_path = os.path.join(model_dir, "ModelFile")
         
         try:
             with open(modelfile_path, 'w') as f:
-                f.write(f"FROM {model_path}\n")
+                f.write(f"FROM {model_filename}\n")
             self.print_success(f"ModelFile created: {modelfile_path}")
         except Exception as e:
             self.print_error(f"Failed to create ModelFile: {e}")
             return None
             
-        # Create ollama model
+        # Create ollama model - run from the directory containing the .gguf file
         self.print_info(f"Creating ollama model: {model_name}")
-        success, stdout, stderr = self.run_command(f"ollama create {model_name} -f {modelfile_path}")
-        
-        if success:
-            self.print_success(f"Model '{model_name}' created successfully")
-            return model_name
-        else:
-            self.print_error(f"Failed to create model: {stderr}")
-            return None
+        original_dir = os.getcwd()
+        try:
+            os.chdir(model_dir)
+            success, stdout, stderr = self.run_command(f"ollama create {model_name} -f ModelFile")
+            
+            if success:
+                self.print_success(f"Model '{model_name}' created successfully")
+                # List models and ask user to choose
+                return self.list_and_choose_model()
+            else:
+                self.print_error(f"Failed to create model: {stderr}")
+                return None
+        finally:
+            os.chdir(original_dir)
             
     def list_ollama_models(self) -> List[str]:
         """List available ollama models"""
