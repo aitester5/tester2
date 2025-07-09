@@ -1,14 +1,15 @@
-# Garak Prompt Injection Testing Tool
+# LLM vulnerability scanner
 
-A comprehensive Python script for testing LLM models for prompt injection vulnerabilities using [garak](https://github.com/NVIDIA/garak) by NVIDIA.
+A comprehensive Python script for testing LLM models for vulnerabilities using [garak](https://github.com/NVIDIA/garak) by NVIDIA.
 
 ## Features
 
 - **Interactive Model Setup**: Support for both .gguf files and existing Ollama models
 - **Automated Environment Management**: Creates and manages conda environments
-- **Comprehensive Probe Selection**: Choose from 33 different security probes
+- **Comprehensive Probe Selection**: Choose from 32 different security probes
 - **Automated Report Generation**: Generates and opens HTML reports in browser
 - **User-Friendly Interface**: Color-coded output and step-by-step guidance
+- **Flexible Environment Support**: Works with new or existing conda environments
 
 ## Prerequisites
 
@@ -44,49 +45,68 @@ curl -fsSL https://ollama.ai/install.sh | sh
 python garak_prompt_injection.py
 ```
 
-### 2. Follow the Interactive Prompts
+### 2. Follow the Interactive Steps
 
-The script will guide you through:
+The script follows a 5-step process:
 
-1. **Model Selection**:
-   - Option 1: Use a .gguf model file (script will create ModelFile and set up Ollama)
-   - Option 2: Use an already pulled Ollama model
+#### **Step 1: Model Selection**
+- Option 1: Use a .gguf model file (script will create ModelFile and set up Ollama)
+- Option 2: Use an already pulled Ollama model
 
-2. **Environment Setup**:
-   - Option 1: Create new conda environment and install garak
-   - Option 2: Use existing environment (if already set up)
+#### **Step 2: Environment Setup**
+- Option 1: Create new conda environment and install garak
+- Option 2: Use existing environment (you'll specify the environment name)
 
-3. **Probe Selection**:
-   - Choose from 33 available security probes
-   - Select individual probes or use all probes
+#### **Step 3: Probe Selection**
+- Choose from 32 available security probes
+- Select individual probes or use all probes
 
-4. **Test Execution**:
-   - Automated execution with real-time progress
-   - Report generation and browser opening
+#### **Step 4: Test Execution**
+- Automated execution with real-time progress
+- Live status updates during scanning
+
+#### **Step 5: Report Generation**
+- Automatic report generation and browser opening
+- Report location displayed on interface
 
 ## Available Probes
 
-The script includes the following security probes:
+The script includes 32 security probes (without the "garak.probes." prefix):
 
-### Core Probes
-- `garak.probes.base` - Base functionality tests
-- `garak.probes.promptinject` - **Primary prompt injection tests**
-- `garak.probes.dan` - "Do Anything Now" jailbreak attempts
-- `garak.probes.encoding` - Encoding-based injection tests
+### Core Vulnerability Probes
+- `promptinject` - **Primary prompt injection tests**
+- `dan` - "Do Anything Now" jailbreak attempts
+- `encoding` - Encoding-based injection tests
+- `latentinjection` - Hidden injection tests
 
-### Advanced Probes
-- `garak.probes.latentinjection` - Hidden injection tests
-- `garak.probes.exploitation` - Code and template injection
-- `garak.probes.malwaregen` - Malware generation attempts
-- `garak.probes.xss` - Cross-site scripting tests
+### Advanced Security Probes
+- `exploitation` - Code and template injection
+- `malwaregen` - Malware generation attempts
+- `xss` - Cross-site scripting tests
+- `visual_jailbreak` - Visual-based jailbreak attempts
 
-### Specialized Probes
-- `garak.probes.continuation` - Continuation attacks
-- `garak.probes.suffix` - Suffix-based attacks
-- `garak.probes.grandma` - Social engineering tests
-- `garak.probes.doctor` - Professional role exploitation
+### Specialized Attack Probes
+- `continuation` - Continuation attacks
+- `suffix` - Suffix-based attacks
+- `grandma` - Social engineering tests
+- `doctor` - Professional role exploitation
+- `ansiescape` - ANSI escape sequence attacks
+- `atkgen` - Attack generation tests
 
-[Full list of 33 probes available in the script]
+### Content and Behavior Probes
+- `realtoxicityprompts` - Real toxicity prompt tests
+- `misleading` - Misleading information tests
+- `packagehallucination` - Package hallucination tests
+- `donotanswer` - Refusal testing
+
+### Technical Probes
+- `fileformats` - File format exploitation
+- `glitch` - Glitch-based attacks
+- `snowball` - Snowball effect attacks
+- `taptest` - TAP (Tree of Attack Prompts) testing
+- `_tier` - Tier-based testing
+
+[Complete list of 32 probes available in the script]
 
 ## Example Workflow
 
@@ -96,9 +116,10 @@ The script includes the following security probes:
 $ python garak_prompt_injection.py
 
 ============================================================
-                 Garak Prompt Injection Testing Tool
+                 LLM vulnerability scanner                  
 ============================================================
 
+Step 1: Model Selection
 Choose your model option:
 1. LLM model in .gguf format
 2. Already pulled model in Ollama
@@ -111,40 +132,51 @@ Enter a name for your model: my-test-model
 ✓ ModelFile created: /path/to/ModelFile
 ✓ Model 'my-test-model' created successfully
 
+Available models:
+1. my-test-model
+2. llama3.1:8b
+
+Select model (1-2): 1
+
+Step 2: Garak Environment Setup
 Choose environment option:
 1. Create an environment and install garak
 2. Already created and garak is installed
 
 Enter your choice (1-2): 1
 
-ℹ Creating conda environment...
 ✓ Environment created successfully
-ℹ Installing garak...
 ✓ Garak installed successfully
+✓ Garak is working correctly
 
+Step 3: Probe Selection
 Available probes:
- 1. garak.probes.base
- 2. garak.probes.promptinject
- 3. garak.probes.dan
+ 1. base
+ 2. promptinject
+ 3. dan
  ...
 
 Enter probe numbers separated by commas: 2,3,8
 
-ℹ Running command: conda run -n garak_env python -m garak --model_type ollama --model_name my-test-model --probes garak.probes.promptinject,garak.probes.dan,garak.probes.encoding
+Step 4: Running Garak Test
+Running command: conda run -n garak_env python -m garak --model_type ollama --model_name my-test-model --probes promptinject,dan,encoding
 
-⚠ This may take several minutes to complete...
-[Garak execution output...]
+Garak is running... This may take several minutes to complete...
+[Live garak output...]
 
 ✓ Garak test completed successfully!
-ℹ Opening report: /home/user/.garak/report_20250715_143022.html
+
+Step 5: Opening Report
+Report generated: /current/directory/garak_report.html
 ✓ Report opened in browser
 ```
 
-### Using Existing Ollama Model
+### Using Existing Ollama Model with Custom Environment
 
 ```bash
 $ python garak_prompt_injection.py
 
+Step 1: Model Selection
 Choose your model option:
 1. LLM model in .gguf format
 2. Already pulled model in Ollama
@@ -154,20 +186,21 @@ Enter your choice (1-2): 2
 Available models:
 1. llama3.1:8b
 2. mistral-nemo:latest
-3. codellama:7b
 
-Select model (1-3): 1
+Select model (1-2): 1
 
+Step 2: Garak Environment Setup
 Choose environment option:
 1. Create an environment and install garak
 2. Already created and garak is installed
 
 Enter your choice (1-2): 2
 
+Enter the environment name: my_garak_env
+
 ✓ Garak is working correctly
 
-Available probes:
-...
+Step 3: Probe Selection
 Enter probe numbers separated by commas (e.g., 1,3,5) or 'all' for all probes: all
 
 [Test execution...]
@@ -184,9 +217,10 @@ After the test completes, garak generates a comprehensive report showing:
 
 ### Report Location
 
-Reports are saved in `~/.garak/` directory with timestamped filenames:
-- HTML reports: `report_YYYYMMDD_HHMMSS.html`
-- JSON reports: `report_YYYYMMDD_HHMMSS.jsonl`
+Reports are automatically generated and opened in your browser. They can be found in:
+- Current working directory (priority)
+- `~/.garak/` directory (fallback)
+- Report path is displayed in the interface
 
 ## Troubleshooting
 
@@ -203,25 +237,38 @@ Reports are saved in `~/.garak/` directory with timestamped filenames:
 3. **"Model creation failed"**
    - Check .gguf file path and permissions
    - Ensure sufficient disk space
+   - Verify .gguf file is valid
 
 4. **"Garak installation failed"**
    - Check internet connectivity
    - Try manual installation: `pip install garak`
 
-### Environment Issues
+5. **"Environment not found"**
+   - Check environment name spelling
+   - List environments: `conda env list`
+
+### Environment Management
 
 ```bash
-# Reset environment if needed
-conda env remove -n garak_env
+# List existing environments
+conda env list
+
+# Create new environment manually
 conda create -n garak_env python=3.12 -y
 conda activate garak_env
 pip install garak
+
+# Remove environment if needed
+conda env remove -n garak_env
 ```
 
 ### Report Issues
 
 ```bash
-# Manually check reports
+# Manually check reports in current directory
+ls -la *.html
+
+# Check ~/.garak directory
 ls -la ~/.garak/
 ```
 
@@ -231,6 +278,7 @@ ls -la ~/.garak/
 - **Model Safety**: Be cautious with untrusted models
 - **Result Interpretation**: Consult security experts for critical applications
 - **Data Privacy**: Ensure test data doesn't contain sensitive information
+- **Resource Usage**: Some probes may consume significant resources
 
 ## Advanced Usage
 
@@ -248,6 +296,17 @@ python -m garak --model_type ollama --model_name model --probes promptinject --c
 # Verbose output
 python -m garak --model_type ollama --model_name model --probes promptinject --verbose
 ```
+
+### Probe Categories
+
+The 32 probes are organized into categories:
+
+1. **Injection Attacks**: promptinject, latentinjection, encoding
+2. **Jailbreak Attempts**: dan, visual_jailbreak, grandma
+3. **Social Engineering**: doctor, grandma, misleading
+4. **Technical Exploits**: exploitation, xss, fileformats
+5. **Content Generation**: malwaregen, realtoxicityprompts
+6. **Behavioral Tests**: continuation, suffix, snowball
 
 ## Contributing
 
