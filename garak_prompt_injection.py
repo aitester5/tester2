@@ -195,7 +195,26 @@ class GarakTester:
         finally:
             os.chdir(original_dir)
             
-    def list_ollama_models(self) -> List[str]:
+    def list_and_choose_model(self) -> Optional[str]:
+        """List available ollama models and ask user to choose"""
+        models = self.list_ollama_models()
+        if not models:
+            self.print_error("No models found in Ollama")
+            return None
+            
+        self.print_info("Available models:")
+        for i, model in enumerate(models, 1):
+            print(f"{i}. {model}")
+            
+        while True:
+            try:
+                model_choice = int(input(f"\n{Colors.BOLD}Select model (1-{len(models)}): {Colors.ENDC}"))
+                if 1 <= model_choice <= len(models):
+                    return models[model_choice - 1]
+                else:
+                    self.print_error(f"Please enter a number between 1 and {len(models)}")
+            except ValueError:
+                self.print_error("Please enter a valid number")
         """List available ollama models"""
         success, stdout, stderr = self.run_command("ollama list")
         
